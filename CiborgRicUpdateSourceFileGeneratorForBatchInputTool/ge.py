@@ -23,6 +23,9 @@ class Ge():
             if 'IN_SUB_RIC' ==schemas.get('Key'):
                 print schemas.get('DefaultValue')
                 self.formatStr = Ge._parseFormat(schemas.get('DefaultValue'))
+                
+            if 'PRI_PRO_PREFIX_IN'== schemas.get('Key'):
+                self.prefixStr = schemas.get('DefaultValue').encode('ascii')
             
         return None
     
@@ -35,7 +38,7 @@ class Ge():
         fileE=tree.getroot()
         for broker in self.brokers.items():
             for tenor in self.tenors:
-                ricname = Ge._combineRicName(broker, tenor, self.formatStr)
+                ricname = Ge._combineRicName(broker, tenor, self.prefixStr,self.formatStr)
                 attrib=fielddict
                 attrib.update({'name':ricname.encode('ascii')})
                 ET.SubElement(fileE,'ric',attrib)
@@ -55,8 +58,9 @@ class Ge():
         return str
     
     @classmethod
-    def _combineRicName(cls,broker,tenor,formatStr):    
+    def _combineRicName(cls,broker,tenor,prefix,formatStr):    
         fs=formatStr.replace('<tenor>',tenor).replace('<broker>',broker[0]).replace('<broker.sid>',broker[1][u'SID'])
+        fs = prefix + fs
         print fs
         return fs
         
@@ -69,7 +73,7 @@ def generate():
     fileName=raw_input('input filename:')
     gnt = Ge(fileName)
     gnt.generate()
-    print 'finished'
+    raw_input('finished')
     
     
 if __name__ =='__main__':
