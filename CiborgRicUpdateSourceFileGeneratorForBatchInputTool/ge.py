@@ -27,7 +27,7 @@ class Ge():
         return None
     
     
-    def generate(self,fielddict={'field393':'1.0','field275':'1.1'}):     
+    def generate(self,fielddict={'fid393':'1.0','fid275':'1.1'}):     
         fl = open('ge.xml','wb')
         fl.write('<file></file>')
         fl.close()
@@ -36,8 +36,8 @@ class Ge():
         for broker in self.brokers.items():
             for tenor in self.tenors:
                 ricname = Ge._combineRicName(broker, tenor, self.formatStr)
-                attrib={'name':ricname.encode('ascii')}
-                attrib.update(fielddict)
+                attrib=fielddict
+                attrib.update({'name':ricname.encode('ascii')})
                 ET.SubElement(fileE,'ric',attrib)
         tree.write('ge.xml')
         
